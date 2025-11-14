@@ -11,7 +11,7 @@ initial_movies = [
         "director": "Фрэнк Дарабонт",
         "year": 1994,
         "is_oscar_winner": False,
-        "description": "Два заключенных заводят дружбу...",
+        "descriptions": "Два заключенных заводят дружбу...",
         "poster": None,
         "description_file": None
     },
@@ -21,7 +21,7 @@ initial_movies = [
         "director": "Фрэнсис Форд Коппола",
         "year": 1972,
         "is_oscar_winner": True,
-        "description": "Эпическая история сицилийской мафиозной семьи...",
+        "descriptions": "Эпическая история сицилийской мафиозной семьи...",
         "poster": None,
         "description_file": None
     },

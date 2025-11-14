@@ -74,7 +74,7 @@ async def create_movie(
         "director": director,
         "year": year,
         "is_oscar_winner": is_oscar_winner,
-        "description": description,
+        "descriptions": description,
         "poster": poster_path,
         "description_file": description_file_path
     }
