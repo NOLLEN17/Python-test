@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить новый фильм</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .movie-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .checkbox-group label {
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Добавить новый фильм</h1>
+        </div>
+
+        <form action="/movies/add" method="post" enctype="multipart/form-data" class="movie-form">
+            <!-- Текстовые поля -->
+            <div class="form-group">
+                <label for="name">Название фильма:</label>
+                <input type="text" id="name" name="name" required class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="director">Режиссер:</label>
+                <input type="text" id="director" name="director" required class="form-input">
+            </div>
+
+            <!-- Числовое поле -->
+            <div class="form-group">
+                <label for="year">Год выпуска:</label>
+                <input type="number" id="year" name="year" min="1900" max="2030" required class="form-input">
+            </div>
+
+            <!-- Логическое поле -->
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="is_oscar_winner" name="is_oscar_winner" value="true">
+                <label for="is_oscar_winner">Лауреат премии Оскар</label>
+            </div>
+
+            <!-- Файловые поля -->
+            <div class="form-group">
+                <label for="poster">Обложка фильма:</label>
+                <input type="file" id="poster" name="poster" accept="image/*" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="description_file">Файл с описанием (текстовый файл):</label>
+                <input type="file" id="description_file" name="description_file" accept=".txt,.pdf" class="form-input">
+            </div>
+
+            <!-- Текстовое поле для описания -->
+            <div class="form-group">
+                <label for="description">Описание фильма:</label>
+                <textarea id="description" name="description" rows="4" class="form-input"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Добавить фильм</button>
+                <a href="/" class="btn btn-secondary">На главную</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
