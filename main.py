@@ -8,14 +8,12 @@ from database import get_movie_by_id, get_movie_by_name, add_movie
 
 app = FastAPI(title="Movie Service")
 
-# Создаем папки
 os.makedirs("static/images/movies", exist_ok=True)
 os.makedirs("static/uploads/descriptions", exist_ok=True)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# Данные учебного заведения
 university_data = {
     "name": "Московский Государственный Университет",
     "faculty": "Факультет Вычислительной Математики и Кибернетики",
@@ -56,21 +54,19 @@ async def create_movie(
         poster: UploadFile = File(None),
         description_file: UploadFile = File(None)
 ):
-    # Обработка загрузки обложки
+
     poster_path = None
     if poster and poster.filename:
         poster_path = f"images/movies/{poster.filename}"
         with open(f"static/{poster_path}", "wb") as buffer:
             shutil.copyfileobj(poster.file, buffer)
 
-    # Обработка загрузки файла описания
     description_file_path = None
     if description_file and description_file.filename:
         description_file_path = f"uploads/descriptions/{description_file.filename}"
         with open(f"static/{description_file_path}", "wb") as buffer:
             shutil.copyfileobj(description_file.file, buffer)
 
-    # Создаем данные фильма
     movie_data = {
         "name": name,
         "director": director,
@@ -81,7 +77,6 @@ async def create_movie(
         "description_file": description_file_path
     }
 
-    # Добавляем фильм
     new_movie = add_movie(movie_data)
 
     return RedirectResponse(f"/movies/{new_movie['id']}", status_code=303)
@@ -110,4 +105,4 @@ async def get_movie_info(movie_name: str):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=8165, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8165, reload=True)
