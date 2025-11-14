@@ -55,6 +55,24 @@
         .info-value {
             color: #34495e;
         }
+        .navigation {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+        .nav-link {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav-link:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -92,9 +110,9 @@
             </div>
         </div>
 
-        <div style="margin-top: 30px; text-align: center;">
-            <a href="/" style="color: #3498db; text-decoration: none;">← На главную</a> |
-            <a href="/movietop/Побег из Шоушенка" style="color: #3498db; text-decoration: none;">Пример фильма</a>
+        <div class="navigation">
+            <a href="/movies/add" class="nav-link">🎬 Добавить фильм</a>
+            <a href="/" class="nav-link">🏠 На главную</a>
         </div>
     </div>
 </body>

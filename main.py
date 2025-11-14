@@ -1,40 +1,29 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, Form, UploadFile, File
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from models import Movietop
-import uvicorn
+import os
+import shutil
+from database import get_movie_by_id, get_movie_by_name, add_movie
 
-app = FastAPI(title="Movie Top 10 Service")
+app = FastAPI(title="Movie Service")
 
-# Монтируем статические файлы
+# Создаем папки
+os.makedirs("static/images/movies", exist_ok=True)
+os.makedirs("static/uploads/descriptions", exist_ok=True)
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Настраиваем шаблоны
 templates = Jinja2Templates(directory="templates")
 
-# Данные учебного заведения (ЗАПОЛНИТЕ СВОИМИ ДАННЫМИ)
+# Данные учебного заведения
 university_data = {
-    "name": "БГИТУ",
-    "faculty": "Информационные технологии",
-    "specialty": "ИВТ-201",
+    "name": "Ваш институт/университет",
+    "faculty": "Ваш факультет",
+    "specialty": "Ваша специальность",
     "year": "2024",
     "photo_url": "/static/images/university.jpg"
 }
 
-# Топ-10 фильмов
-movies_db = [
-    Movietop(id=1, name="Побег из Шоушенка", cost=10000000, director="Фрэнк Дарабонт"),
-    Movietop(id=2, name="Крестный отец", cost=6000000, director="Фрэнсис Форд Коппола"),
-    Movietop(id=3, name="Темный рыцарь", cost=185000000, director="Кристофер Нолан"),
-    Movietop(id=4, name="Криминальное чтиво", cost=8000000, director="Квентин Тарантино"),
-    Movietop(id=5, name="Форрест Гамп", cost=55000000, director="Роберт Земекис"),
-    Movietop(id=6, name="Начало", cost=160000000, director="Кристофер Нолан"),
-    Movietop(id=7, name="Матрица", cost=63000000, director="Братья Вачовски"),
-    Movietop(id=8, name="Список Шиндлера", cost=22000000, director="Стивен Спилберг"),
-    Movietop(id=9, name="Властелин колец: Братство кольца", cost=93000000, director="Питер Джексон"),
-    Movietop(id=10, name="Зеленая миля", cost=60000000, director="Фрэнк Дарабонт")
-]
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
@@ -43,6 +32,7 @@ async def root(request: Request):
         **university_data
     })
 
+
 @app.get("/study", response_class=HTMLResponse)
 async def get_study_info(request: Request):
     return templates.TemplateResponse("study.html", {
@@ -50,9 +40,66 @@ async def get_study_info(request: Request):
         **university_data
     })
 
+
+@app.get("/movies/add", response_class=HTMLResponse)
+async def add_movie_form(request: Request):
+    return templates.TemplateResponse("add_movie.html", {"request": request})
+
+
+@app.post("/movies/add")
+async def create_movie(
+        name: str = Form(...),
+        director: str = Form(...),
+        year: int = Form(...),
+        is_oscar_winner: bool = Form(False),
+        description: str = Form(None),
+        poster: UploadFile = File(None),
+        description_file: UploadFile = File(None)
+):
+
+    poster_path = None
+    if poster and poster.filename:
+        poster_path = f"images/movies/{poster.filename}"
+        with open(f"static/{poster_path}", "wb") as buffer:
+            shutil.copyfileobj(poster.file, buffer)
+
+    description_file_path = None
+    if description_file and description_file.filename:
+        description_file_path = f"uploads/descriptions/{description_file.filename}"
+        with open(f"static/{description_file_path}", "wb") as buffer:
+            shutil.copyfileobj(description_file.file, buffer)
+
+    movie_data = {
+        "name": name,
+        "director": director,
+        "year": year,
+        "is_oscar_winner": is_oscar_winner,
+        "description": description,
+        "poster": poster_path,
+        "description_file": description_file_path
+    }
+
+    new_movie = add_movie(movie_data)
+
+    return RedirectResponse(f"/movies/{new_movie['id']}", status_code=303)
+
+
+@app.get("/movies/{movie_id}", response_class=HTMLResponse)
+async def get_movie_detail(request: Request, movie_id: int):
+    movie = get_movie_by_id(movie_id)
+    if not movie:
+        return HTMLResponse("Фильм не найден", status_code=404)
+
+    return templates.TemplateResponse("movie_detail.html", {
+        "request": request,
+        "movie": movie
+    })
+
+
 @app.get("/movietop/{movie_name}")
 async def get_movie_info(movie_name: str):
-    for movie in movies_db:
-        if movie.name.lower() == movie_name.lower():
-            return movie
+    movie = get_movie_by_name(movie_name)
+    if movie:
+        return movie
     return {"error": "Фильм не найден"}
+
