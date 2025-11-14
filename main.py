@@ -15,9 +15,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 university_data = {
-    "name": "Московский Государственный Университет",
-    "faculty": "Факультет Вычислительной Математики и Кибернетики",
-    "specialty": "Прикладная информатика",
+    "name": "БГИТУ",
+    "faculty": "Информационные технологии",
+    "specialty": "ИВТ",
     "year": "2024",
     "photo_url": "/static/images/university.jpg"
 }
