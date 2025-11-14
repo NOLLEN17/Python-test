@@ -11,20 +11,10 @@ initial_movies = [
         "director": "Фрэнк Дарабонт",
         "year": 1994,
         "is_oscar_winner": False,
-        "descriptions": "Два заключенных заводят дружбу...",
+        "description": "Два заключенных заводят дружбу...",
         "poster": None,
         "description_file": None
-    },
-    {
-        "id": 2,
-        "name": "Крестный отец",
-        "director": "Фрэнсис Форд Коппола",
-        "year": 1972,
-        "is_oscar_winner": True,
-        "descriptions": "Эпическая история сицилийской мафиозной семьи...",
-        "poster": None,
-        "description_file": None
-    },
+    }
 ]
 
 def load_movies():
@@ -58,7 +48,7 @@ def get_movie_by_name(movie_name: str):
 
 def add_movie(movie_data: Dict):
     movies = load_movies()
-    new_id = max(movie['id'] for movie in movies) + 1
+    new_id = max(movie['id'] for movie in movies) + 1 if movies else 1
     movie_data['id'] = new_id
     movies.append(movie_data)
     save_movies(movies)

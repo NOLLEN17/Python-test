@@ -17,9 +17,9 @@ templates = Jinja2Templates(directory="templates")
 
 # Данные учебного заведения
 university_data = {
-    "name": "Ваш институт/университет",
-    "faculty": "Ваш факультет",
-    "specialty": "Ваша специальность",
+    "name": "Московский Государственный Университет",
+    "faculty": "Факультет Вычислительной Математики и Кибернетики",
+    "specialty": "Прикладная информатика",
     "year": "2024",
     "photo_url": "/static/images/university.jpg"
 }
@@ -56,29 +56,32 @@ async def create_movie(
         poster: UploadFile = File(None),
         description_file: UploadFile = File(None)
 ):
-
+    # Обработка загрузки обложки
     poster_path = None
     if poster and poster.filename:
         poster_path = f"images/movies/{poster.filename}"
         with open(f"static/{poster_path}", "wb") as buffer:
             shutil.copyfileobj(poster.file, buffer)
 
+    # Обработка загрузки файла описания
     description_file_path = None
     if description_file and description_file.filename:
         description_file_path = f"uploads/descriptions/{description_file.filename}"
         with open(f"static/{description_file_path}", "wb") as buffer:
             shutil.copyfileobj(description_file.file, buffer)
 
+    # Создаем данные фильма
     movie_data = {
         "name": name,
         "director": director,
         "year": year,
         "is_oscar_winner": is_oscar_winner,
-        "descriptions": description,
+        "description": description,
         "poster": poster_path,
         "description_file": description_file_path
     }
 
+    # Добавляем фильм
     new_movie = add_movie(movie_data)
 
     return RedirectResponse(f"/movies/{new_movie['id']}", status_code=303)
@@ -103,3 +106,8 @@ async def get_movie_info(movie_name: str):
         return movie
     return {"error": "Фильм не найден"}
 
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", host="0.0.0.0", port=8165, reload=True)

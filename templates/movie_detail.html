@@ -5,82 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ movie.name }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-        }
-        .movie-detail {
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-        }
-        .movie-poster {
-            flex: 1;
-            text-align: center;
-            min-width: 300px;
-        }
-        .movie-poster img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-        .no-poster {
-            padding: 60px 20px;
-            background: #ecf0f1;
-            border-radius: 10px;
-            color: #7f8c8d;
-            font-style: italic;
-        }
-        .movie-info {
-            flex: 2;
-        }
-        .info-item {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border-left: 4px solid #3498db;
-        }
-        .info-label {
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        .info-value {
-            color: #34495e;
-        }
-        .navigation {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ecf0f1;
-        }
-        .nav-link {
-            display: inline-block;
-            margin: 0 10px;
-            padding: 10px 20px;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .nav-link:hover {
-            background: #2980b9;
-        }
+        body { font-family: Arial; max-width: 1000px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        .movie-detail { display: flex; gap: 40px; align-items: flex-start; }
+        .movie-poster { flex: 1; text-align: center; min-width: 300px; }
+        .movie-poster img { max-width: 100%; border-radius: 10px; box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+        .no-poster { padding: 60px 20px; background: #ecf0f1; border-radius: 10px; color: #7f8c8d; }
+        .movie-info { flex: 2; }
+        .info-item { margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #3498db; }
+        .info-label { font-weight: bold; color: #2c3e50; }
+        .navigation { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ecf0f1; }
+        .nav-link { display: inline-block; margin: 0 10px; padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -101,17 +37,17 @@
             <div class="movie-info">
                 <div class="info-item">
                     <div class="info-label">Режиссер:</div>
-                    <div class="info-value">{{ movie.director }}</div>
+                    <div>{{ movie.director }}</div>
                 </div>
 
                 <div class="info-item">
                     <div class="info-label">Год выпуска:</div>
-                    <div class="info-value">{{ movie.year }}</div>
+                    <div>{{ movie.year }}</div>
                 </div>
 
                 <div class="info-item">
                     <div class="info-label">Премия Оскар:</div>
-                    <div class="info-value">
+                    <div>
                         {% if movie.is_oscar_winner %}
                         🏆 Да
                         {% else %}
@@ -123,16 +59,14 @@
                 {% if movie.description %}
                 <div class="info-item">
                     <div class="info-label">Описание:</div>
-                    <div class="info-value">{{ movie.description }}</div>
+                    <div>{{ movie.description }}</div>
                 </div>
                 {% endif %}
 
                 {% if movie.description_file %}
                 <div class="info-item">
                     <div class="info-label">Файл описания:</div>
-                    <div class="info-value">
-                        <a href="/static/{{ movie.description_file }}" download>Скачать описание</a>
-                    </div>
+                    <div><a href="/static/{{ movie.description_file }}" download>Скачать описание</a></div>
                 </div>
                 {% endif %}
             </div>
