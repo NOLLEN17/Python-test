@@ -4,4 +4,4 @@ class Movietop(BaseModel):
     id: int
     name: str
     cost: int
-    director: str
+    director: str #

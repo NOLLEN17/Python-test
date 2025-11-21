@@ -4,24 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить фильм</title>
-    <style>
-        body { font-family: Arial; max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { text-align: center; color: #2c3e50; margin-bottom: 30px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; }
-        input, textarea { width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 5px; font-size: 16px; }
-        .checkbox { display: flex; align-items: center; }
-        .checkbox input { width: auto; margin-right: 10px; }
-        .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn-primary { background: #3498db; color: white; }
-        .btn-secondary { background: #95a5a6; color: white; margin-left: 10px; }
-    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 Добавить новый фильм</h1>
+            <h1>Добавить новый фильм</h1>
         </div>
 
         <form action="/movies/add" method="post" enctype="multipart/form-data">

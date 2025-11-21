@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему</title>
+</head>
+<body>
+    <h2>Вход в систему</h2>
+
+    <form id="loginForm">
+        <div>
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Войти</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    messageDiv.style.color = 'green';
+                    messageDiv.textContent = 'Успешный вход! Перенаправление...';
+
+                    setTimeout(() => {
+                        window.location.href = '/user';
+                    }, 1000);
+                } else {
+                    const error = await response.json();
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = 'Ошибка: ' + error.message;
+                }
+            } catch (error) {
+                messageDiv.style.color = 'red';
+                messageDiv.textContent = 'Ошибка сети';
+            }
+        });
+    </script>
+</body>
+</html>
