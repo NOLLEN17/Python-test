@@ -4,52 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить фильм</title>
+    <style>
+        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Добавить новый фильм</h1>
+    <h2>Добавить фильм (JWT защита)</h2>
+
+    <form id="movieForm">
+        <div>
+            <label for="name">Название фильма:</label>
+            <input type="text" id="name" name="name" required>
         </div>
+        <div>
+            <label for="director">Режиссер:</label>
+            <input type="text" id="director" name="director" required>
+        </div>
+        <div>
+            <label for="year">Год выпуска:</label>
+            <input type="number" id="year" name="year" required>
+        </div>
+        <div>
+            <label for="is_oscar_winner">
+                <input type="checkbox" id="is_oscar_winner" name="is_oscar_winner">
+                Лауреат Оскара
+            </label>
+        </div>
+        <div>
+            <label for="description">Описание:</label>
+            <textarea id="description" name="description"></textarea>
+        </div>
+        <div>
+            <label for="poster">Постер:</label>
+            <input type="file" id="poster" name="poster" accept="image/*">
+        </div>
+        <div>
+            <label for="description_file">Файл описания:</label>
+            <input type="file" id="description_file" name="description_file">
+        </div>
+        <button type="submit">Добавить фильм</button>
+    </form>
 
-        <form action="/movies/add" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="name">Название фильма:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
+    <div id="message"></div>
 
-            <div class="form-group">
-                <label for="director">Режиссер:</label>
-                <input type="text" id="director" name="director" required>
-            </div>
+    <p><a href="/login">Получить JWT токен</a></p>
 
-            <div class="form-group">
-                <label for="year">Год выпуска:</label>
-                <input type="number" id="year" name="year" min="1900" max="2030" required>
-            </div>
+    <script>
+        document.getElementById('movieForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('Форма отправляется...');
 
-            <div class="form-group checkbox">
-                <input type="checkbox" id="is_oscar_winner" name="is_oscar_winner" value="true">
-                <label for="is_oscar_winner">Лауреат премии Оскар</label>
-            </div>
+            const token = localStorage.getItem('jwt_token');
+            console.log('Токен из localStorage:', token);
 
-            <div class="form-group">
-                <label for="poster">Обложка фильма:</label>
-                <input type="file" id="poster" name="poster" accept="image/*">
-            </div>
+            if (!token) {
+                showMessage('Сначала получите JWT токен на странице /login', 'error');
+                return;
+            }
 
-            <div class="form-group">
-                <label for="description_file">Файл с описанием:</label>
-                <input type="file" id="description_file" name="description_file" accept=".txt,.pdf">
-            </div>
+            const formData = new FormData(this);
 
-            <div class="form-group">
-                <label for="description">Описание фильма:</label>
-                <textarea id="description" name="description" rows="4"></textarea>
-            </div>
+            // Добавляем отладочную информацию
+            console.log('Данные формы:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ': ' + value);
+            }
 
-            <button type="submit" class="btn btn-primary">Добавить фильм</button>
-            <a href="/" class="btn btn-secondary">На главную</a>
-        </form>
-    </div>
+            try {
+                showMessage('Отправка запроса...', 'warning');
+
+                const response = await fetch('/add_film', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                console.log('Статус ответа:', response.status);
+
+                if (response.ok) {
+                    showMessage('Фильм успешно добавлен!', 'success');
+                    this.reset();
+
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+
+                } else {
+                    const error = await response.json();
+                    console.log('Ошибка от сервера:', error);
+                    showMessage('Ошибка: ' + error.detail, 'error');
+
+                    if (error.detail.includes('expired') || error.detail.includes('Invalid')) {
+                        localStorage.removeItem('jwt_token');
+                        showMessage('Токен устарел. <a href="/login">Получить новый токен</a>', 'error');
+                    }
+                }
+            } catch (error) {
+                console.log('Ошибка сети:', error);
+                showMessage('Ошибка сети: ' + error.message, 'error');
+            }
+        });
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+        }
+
+        // Проверяем наличие токена при загрузке страницы
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('jwt_token');
+            console.log('Токен при загрузке:', token);
+
+            if (!token) {
+                showMessage('Внимание: для добавления фильма нужен JWT токен. <a href="/login">Получить токен</a>', 'warning');
+            } else {
+                showMessage('Токен найден! Вы можете добавить фильм.', 'success');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -6,7 +6,7 @@
     <title>Вход в систему</title>
 </head>
 <body>
-    <h2>Вход в систему</h2>
+    <h2>Вход в систему (JWT)</h2>
 
     <form id="loginForm">
         <div>
@@ -20,7 +20,20 @@
         <button type="submit">Войти</button>
     </form>
 
+    <div style="margin-top: 20px;">
+    <button onclick="logout()">Выйти (очистить токен)</button>
+</div>
+
     <div id="message"></div>
+
+    <div id="tokenInfo" style="display: none; margin-top: 20px; padding: 10px; background: #f0f0f0;">
+        <h3>Токен получен!</h3>
+        <p>Теперь вы можете добавлять фильмы через защищенный маршрут /add_film</p>
+        <p>Используйте этот токен в заголовке Authorization:</p>
+        <code id="tokenDisplay"></code>
+        <br><br>
+        <a href="/add_film" id="addFilmLink">Перейти к добавлению фильма</a>
+    </div>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -42,21 +55,40 @@
                 if (response.ok) {
                     const data = await response.json();
                     messageDiv.style.color = 'green';
-                    messageDiv.textContent = 'Успешный вход! Перенаправление...';
+                    messageDiv.textContent = 'Успешный вход!';
 
-                    setTimeout(() => {
-                        window.location.href = '/user';
-                    }, 1000);
+                    // Сохраняем токен в localStorage
+                    localStorage.setItem('jwt_token', data.access_token);
+
+                    // Показываем информацию о токене
+                    document.getElementById('tokenDisplay').textContent = data.access_token;
+                    document.getElementById('tokenInfo').style.display = 'block';
+
                 } else {
                     const error = await response.json();
                     messageDiv.style.color = 'red';
-                    messageDiv.textContent = 'Ошибка: ' + error.message;
+                    messageDiv.textContent = 'Ошибка: ' + error.detail;
                 }
             } catch (error) {
                 messageDiv.style.color = 'red';
-                messageDiv.textContent = 'Ошибка сети';
+                messageDiv.textContent = 'Ошибка сети: ' + error.message;
             }
         });
+
+        // Проверяем, есть ли уже сохраненный токен
+        window.addEventListener('load', function() {
+            const savedToken = localStorage.getItem('jwt_token');
+            if (savedToken) {
+                document.getElementById('tokenDisplay').textContent = savedToken;
+                document.getElementById('tokenInfo').style.display = 'block';
+            }
+        });
+
+        function logout() {
+        localStorage.removeItem('jwt_token');
+        alert('Токен удален! Обновите страницу.');
+        location.reload();
+    }
     </script>
 </body>
 </html>
